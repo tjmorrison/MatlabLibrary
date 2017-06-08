@@ -1,17 +1,17 @@
-function [ww_new ff_new] = cospectra(uu2,vv2)
+function [ww_new ff_new] = cospectra(u,v)
 
 tbin = 0.1;         % Time bins (minutes)
 tbin = tbin * 60;   % seconds
 
-uu2 = uu2 - mean(uu2); % perturbation u'
-vv2 = vv2 - mean(vv2); % perturbation v'
+u = u - mean(u); % perturbation u'
+v = v - mean(v); % perturbation v'
 
-u2=uu2;
-v2=vv2;
+u2=u;
+v2=v;
 
 F=20;       % Sampling Frequency
 Fn = F/2;   % Nyquist Frequency
-tt2=1:length(uu2);
+tt2=1:length(u);
 tt2=tt2/F;
 T=max(tt2);
 nbins=T/tbin;
@@ -23,8 +23,8 @@ while ti<=max(tt2)-T/nbins
       jj=1;
 for i=1:length(tt2)
     if tt2(i)>=ti-T/nbins && tt2(i)<=ti+T/nbins
-        u2(jj)=uu2(i);
-        v2(jj)=vv2(i);
+        u2(jj)=u(i);
+        v2(jj)=v(i);
         jj=jj+1;
     end
 end
