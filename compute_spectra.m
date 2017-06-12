@@ -42,19 +42,14 @@ Covariance2 = trapz(freq',psdx); %(We multiply by two because I only integrate h
 
 
 %Collocate the FFT in a new vector that keeps track of the gate-range.
-PDens1 = zeros(length(psdx));
-PDens2 = zeros(length(psdx));
+%PDens1 = zeros(length(psdx));
+%PDens2 = zeros(length(psdx));
 
 
 
-for k = 1:length(psdx)
-    PDens1(k) = psdx(k);
-    PDens2(k) = psdx(k)/Covariance1;
-end
 
-
-avgPDens=mean(PDens1,2);
-avgPDens_sig=mean(PDens2,2);
+avgPDens = psdx;
+avgPDens_sig=mean(psdx./Covariance1);
 
 
 
@@ -63,8 +58,8 @@ avgPDens_sig=mean(PDens2,2);
 % x_axis=freq;
 % xbin=logspace(log10(x_axis(2)),log10(x_axis(end)),binNum);xbin= [0 xbin];
 % y_axis=avgPDens;
-% [xx1,yy1] = computeBinAvg(x_axis,y_axis,xbin);
-
+% [xx1,yy1] = histcounts(y_axis,xbin);
+% 
 
 
 %axis([-inf inf 0 10])
