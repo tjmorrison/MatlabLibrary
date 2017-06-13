@@ -35,7 +35,7 @@ xdft=real(xdft1.*conj(xdft2));
 psdx = (1/(Fs*N)) *xdft(1:N/2+1);
 psdx(2:end-1) = 2*psdx(2:end-1);
 
-freq = 0:Fs/length(filt_var1):Fs/2;
+freq = transpose(0:Fs/length(filt_var1):Fs/2);
 
 %Compute the Variance integrating the spectra
 Covariance2 = trapz(freq',psdx); %(We multiply by two because I only integrate half the length of the FFT)
