@@ -3,7 +3,7 @@ function [midpoints, y_bin ] = bin_smoothing(x,y,num_bins)
 N = length(y);
 
 %create bins
-edges = logspace(log(x(2,1)),log(x(end,1)),num_bins);
+edges = logspace(log10(x(2,1)),log10(x(end,1)),num_bins);
 
 %get midpoints of bin (x axis)
 midpoints = zeros(1,num_bins-1);
