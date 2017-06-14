@@ -14,7 +14,7 @@ T_fluct = zeros(nx,ny,nt);
 
 
 %Compute mtrend since it's math does not depend on temporal trend
-T_trend = mean(mean(T,1),2);
+T_trend = squeeze(mean(mean(T,1),2));
 
 num_chunks = nt/avg_window;
 T_patch = zeros(nx,ny,num_chunks);
@@ -26,15 +26,17 @@ for i = 1:num_chunks
     T_patch(:,:,i) = mean(T(:,:,index_start:index_end),3);
     %calc the fluctuations for a chunk
     for j = index_start:index_end
-        T_fluct(:,:,j) = T(:,:,j) - T_patch - T_trend - T_mean; 
+        T_fluct(:,:,j) = T(:,:,j) - T_patch(:,:,i) - T_trend(j) + (T_mean); 
     end
     %increase index
+ 
+    Percent_complete = ((i*avg_window)/nt)*100
     index_start = index_end+1;
     index_end = index_end + avg_window;
 end
 
 %Calc T_patch over whole time
-T_patch = mean(T_patch,3);
+T_patch = squeeze(mean(T_patch,3));
 
 
 end
