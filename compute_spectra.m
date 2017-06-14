@@ -2,9 +2,14 @@ function [freq,avgPDens,avgPDens_sig]=compute_spectra(var1,var2,Fs)
 
 
 Ntotal=length(var1);
+if detrend(var1) == 0 
+    fluct_var1 = var1;
+    fluct_var2 = var2;
+else 
+    fluct_var1 = detrend(var1);
+    fluct_var2 = detrend(var2);
+end
 
-fluct_var1 = detrend(var1);
-fluct_var2 = detrend(var2);
 
 % figure()
 % plot(fluct_var1)
