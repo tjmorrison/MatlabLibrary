@@ -1,47 +1,51 @@
 function [freq,avgPDens,avgPDens_sig]=compute_spectra(var1,var2,Fs)
 
 
-Ntotal=length(var1);
+%interpolate nans
+if sum(isnan(var1(:)))>0
+    var1(:)=inpaint_nans(var1(:),0);
+end
+if sum(isnan(var2(:)))>0
+    var2(:)=inpaint_nans(var2(:),0);
+end
+
+%Ntotal=length(var1);
 if detrend(var1) == 0 
     fluct_var1 = var1;
-    fluct_var2 = var2;
-else 
+else
     fluct_var1 = detrend(var1);
+end
+
+if detrend(var2) == 0 
+    fluct_var2 = var2;
+else
     fluct_var2 = detrend(var2);
 end
 
 
-% figure()
-% plot(fluct_var1)
+%figure()
+%plot(fluct_var1)
+% hold on
+% plot(fluct_var2)
 
-%interpolate nans
-if sum(isnan(fluct_var1(:)))>0
-    fluct_var1(:)=inpaint_nans(fluct_var1(:),0);
-end
-if sum(isnan(fluct_var2(:)))>0
-    fluct_var2(:)=inpaint_nans(fluct_var2(:),0);
-end
-
-filt_var1=fluct_var1(:);
-filt_var2=fluct_var2(:);
 
 %We compute the Variance directly from the Time series data. Two
 %Methodologies, the MatLab "var" function, or the direct definition of
 %Variance. Both produce the same result, as one would expect.
-tmp=nancov(filt_var1,filt_var2);
+tmp=nancov(fluct_var1,fluct_var2);
 Covariance1 = tmp(1,2);
 
 
 %Computing the Fourier Transform and the Power Spectral Density:
-N = length(filt_var1);
-xdft1 = fft(filt_var1);
-xdft2 = fft(filt_var2);
+N = length(fluct_var1);
+xdft1 = fft(fluct_var1);
+xdft2 = fft(fluct_var2);
 
 xdft=real(xdft1.*conj(xdft2));
 psdx = (1/(Fs*N)) *xdft(1:N/2+1);
 psdx(2:end-1) = 2*psdx(2:end-1);
 
-freq = transpose(0:Fs/length(filt_var1):Fs/2);
+freq = 0:Fs/length(fluct_var1):Fs/2;
 
 %Compute the Variance integrating the spectra
 Covariance2 = trapz(freq',psdx); %(We multiply by two because I only integrate half the length of the FFT)

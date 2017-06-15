@@ -14,7 +14,7 @@ T_fluct = zeros(nx,ny,nt);
 
 
 %Compute mtrend since it's math does not depend on temporal trend
-T_trend = squeeze(mean(mean(T,1),2));
+T_trend = squeeze(mean(mean(T,1),2)) ;
 
 num_chunks = nt/avg_window;
 T_patch = zeros(nx,ny,num_chunks);
