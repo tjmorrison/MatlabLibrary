@@ -10,24 +10,24 @@ if sum(isnan(var2(:)))>0
 end
 
 %Ntotal=length(var1);
-if detrend(var1) == 0 
+if detrend(squeeze(var1)) == 0 
     fluct_var1 = var1;
 else
-    fluct_var1 = detrend(var1);
+    fluct_var1 = detrend(squeeze(var1));
 end
 
-if detrend(var2) == 0 
+if detrend(squeeze(var2)) == 0 
     fluct_var2 = var2;
 else
-    fluct_var2 = detrend(var2);
+    fluct_var2 = detrend(squeeze(var2));
 end
 
 
-%figure()
-%plot(fluct_var1)
+% figure()
+% plot(squeeze(fluct_var1))
 % hold on
-% plot(fluct_var2)
-
+% plot(squeeze(fluct_var2))
+% 
 
 %We compute the Variance directly from the Time series data. Two
 %Methodologies, the MatLab "var" function, or the direct definition of
