@@ -1,10 +1,8 @@
-function [ phiU,lam ] = compute_2D_POD( var)
+function [ phi,lam ] = compute_1D_POD( var)
 % METHOD OF SNAPSHOTS
 % calculate the empirical correlation matrix C
-nx = size(var,1);
-ny = size(var,2);
-nsnap = size(var,3);
-U= reshape(var,nx*ny,nsnap);
+nsnap = length(var);
+U = var;
 
 
 CU = U'*U/nsnap;
@@ -17,7 +15,7 @@ phi = U * vecU;
 
 % Normalize the POD basis
 for i=1:nsnap
-    phi(:,i) = phi(:,i)/norm(phi(:,i),2);
+    phi(:,i) = phi(i)/norm(phi(i),2);
 end
 
 lam = diag(valU);
@@ -26,14 +24,11 @@ lam = diag(valU);
 lam = rot90(lam,2);
 lam(end)=0;
 
-phiU = reshape(fliplr(phi(1:nx*ny,:)),nx,ny,nsnap);
 
 % Plotting the results
 figure()
-%set(h, 'Visible', 'off')
 for i = 1:10
-    pcolor(phiU(:,:,i)); 
-    shading interp;
+    plot(phi(:,i)); 
     pause(1)
     savefig(strcat('POD_mode',num2str(i),'.fig'))
 
@@ -46,4 +41,5 @@ xlabel('n','interpreter','latex','fontsize',20)
 savefig('lambda.fig')
 
 end
+
 
