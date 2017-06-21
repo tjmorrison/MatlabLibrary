@@ -10,7 +10,7 @@ for x = 1:nx
         T_prime(x,y,:) = detrend(squeeze(T(x,y,:)));
     end
      if mod(x,10) == 0
-        X_INDEX = x
+        T_prime_percent_complete = ((x*y)/(nx*ny))*100
     end
 end
 
