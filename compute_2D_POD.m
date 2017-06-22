@@ -40,10 +40,16 @@ for i = 1:10
 end
 
 figure()
-semilogx(lam(2:end))
+semilogx(lam(1:end))
 ylabel('$\lambda$','interpreter','latex','fontsize',20)
 xlabel('n','interpreter','latex','fontsize',20)
 savefig('lambda.fig')
+
+figure()
+semilogx(lam(1:end)./sum(lam(1:end)))
+ylabel('$\lambda / \sum{\lambda}$','interpreter','latex','fontsize',20)
+xlabel('n','interpreter','latex','fontsize',20)
+savefig('norm_lambda.fig')
 
 end
 
