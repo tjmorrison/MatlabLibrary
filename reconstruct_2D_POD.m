@@ -29,12 +29,10 @@ for index_snap = 1:n_snap
         temp(:,:,index_modes)  = coeff(index_snap,index_snap,index_modes)*phiU(:,:,index_modes);
     end
     u_rec(:,:,index_snap) = sum(temp,3);
+    if mod(n_snap,10)==0
+        fprintf('recomposed percentage complete \n')
+        Percent = (index_snap/n_snap)*100
+    end
 end
 
-%% 
-% uins=repmat(u_s_av,[1 1 1 n_snap])+u_rec ;
-% 
-% vins=repmat(u_s_av,[1 1 1 n_snap])+v_rec ;
-% 
-% wins=repmat(u_s_av,[1 1 1 n_snap])+w_rec ;
 end
