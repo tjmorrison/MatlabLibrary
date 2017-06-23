@@ -11,7 +11,7 @@ coeff = zeros(n_snap, n_snap, n_modes);
 for index_snap = 1:n_snap
     temp = zeros(nx,ny,n_snap);
     for index_modes=1:n_modes 
-        temp(:,:,:,index_modes) = u(:,:,index_snap).*phiU(:,:,index_modes);
+        temp(:,:,index_modes) = u(:,:,index_snap).*phiU(:,:,index_modes);
         coeff(index_snap,index_snap,index_modes) = trapz(trapz(temp(:,:,index_modes)));
     end
 end
