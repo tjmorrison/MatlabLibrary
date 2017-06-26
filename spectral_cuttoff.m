@@ -36,7 +36,7 @@ plot(f,abs(spektrum));
 spektrum = BPF'.*spektrum;
 subplot(2,1,2);
 plot(f,abs(spektrum));
-x_cut=ifft(ifftshift(spektrum)); %inverse ifft
+x_cut=ifft(ifftshift(spektrum),'symmetric')*N; %inverse ifft
 
 
 
