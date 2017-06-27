@@ -21,21 +21,21 @@ f = (-Fs/2:dF:Fs/2-dF)';
 
 % Band-Pass Filter:
 BPF = ((lower_freq < abs(f)) & (abs(f) < upper_freq));
-figure;
-plot(f,BPF);
+% figure;
+% plot(f,BPF);
 
 time = dt*(0:N-1)';
-figure;
-plot(time,x);
+% figure;
+% plot(time,x);
 
 spektrum = fftshift(fft(x))/N;
-figure;
-subplot(2,1,1);
-plot(f,abs(spektrum));
+% figure;
+% subplot(2,1,1);
+% plot(f,abs(spektrum));
 %apply filter
 spektrum = BPF'.*spektrum;
-subplot(2,1,2);
-plot(f,abs(spektrum));
+% subplot(2,1,2);
+% plot(f,abs(spektrum));
 x_cut=ifft(ifftshift(spektrum),'symmetric')*N; %inverse ifft
 
 
@@ -43,16 +43,16 @@ x_cut=ifft(ifftshift(spektrum),'symmetric')*N; %inverse ifft
 
 
 %figures to see if it worked! 
-figure()
-title('spectras','interpreter','latex','fontsize',15)
-plot(x)
-hold on
-plot(x_cut)
-hold off
-grid on
-legend('orginal signal','spectral cut')
-xlabel('$n$ (Hz)','interpreter','latex','fontsize',15)
-ylabel('x','interpreter','latex','fontsize',15)
+% figure()
+% title('spectras','interpreter','latex','fontsize',15)
+% plot(x)
+% hold on
+% plot(x_cut)
+% hold off
+% grid on
+% legend('orginal signal','spectral cut')
+% xlabel('$n$ (Hz)','interpreter','latex','fontsize',15)
+% ylabel('x','interpreter','latex','fontsize',15)
 
 
 
