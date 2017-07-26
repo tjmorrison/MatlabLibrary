@@ -30,7 +30,7 @@ phiU = reshape(fliplr(phi(1:nx,:)),nx,nsnap);
 % Plotting the results
 switch figure
     case 'on'
-        figure()
+        figure(1)
         subplot(5,2,1)
         plot(phiU(:,1),'k-')
         title('Mode 1', 'interpreter','latex')
@@ -74,9 +74,9 @@ switch figure
         
         savefig('POD_modes')
         saveas(gcf,'POD_modes.png')
-
+close all;
         
-        figure(1)
+        figure()
         semilogx(lam(1:end))
         ylabel('$\lambda$','interpreter','latex','fontsize',20)
         xlabel('n','interpreter','latex','fontsize',20)
