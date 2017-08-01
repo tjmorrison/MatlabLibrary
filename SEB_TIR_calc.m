@@ -1,4 +1,4 @@
-function [ q_air, q_soil, E_soil ] = SEB_TIR_calc( tau_soil, dt, Cp_soil, dz, mu_s , T, Net_Radiation)
+function [ q_air, q_soil, E_soil ] = SEB_TIR_calc( tau_soil, dt, Cp_soil, dz, mu_s ,T_deepsoil,T, Net_Radiation)
 % Heat flux calculator - 
 %Iterates through time
 
@@ -36,7 +36,7 @@ for tavg = 1:1:Navg
                 %smoothing loop 
                 for avg_index = tAVG_start:1:tAVG_end-1
                     dTdt_total = dTdt_total + ddz(T(x,y,avg_index),T(x,y,avg_index+1),dt);
-                    q_soil_total= q_soil_total + mu_s*(T_surface.surf_temp(x,y,avg_index)-T_deepsoil);
+                    q_soil_total= q_soil_total + mu_s*(T(x,y,avg_index)-T_deepsoil);
                 end
                 
                 %Filtered camera dependent variables
@@ -47,15 +47,15 @@ for tavg = 1:1:Navg
                 E_soil(x,y,tavg) = Cp_soil * dz * smoothed_dTdt;
                 
                 %find q'' into air: q''_air=R-q''_s-E_s
-                q_air(x,y,tavg) = Net_Radiation(x,y,t_rad)-q_soil(x,y,tavg)-E_soil(x,y,tavg);
+                q_air(x,y,tavg) = Net_Radiation(x,y)-q_soil(x,y,tavg)-E_soil(x,y,tavg);
                 
             end
         end
     end         
     %indexing the 5 min values 
-    if rem(tavg,index_5minVars)==0
-                t_rad=t_rad+1;
-    end
+%     if rem(tavg,index_5minVars)==0
+%                 t_rad=t_rad+1;
+%     end
     
 end
 
