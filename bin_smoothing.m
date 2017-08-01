@@ -1,4 +1,4 @@
-function [midpoints, y_bin ] = bin_smoothing(x,y,num_bins)
+function [midpoints, y_bin] = bin_smoothing(x,y,num_bins)
 
 N = length(y);
 
@@ -25,6 +25,6 @@ for i = 1:num_bins-1
     end
     cnt = cnt + N_per_bin(i);
 end
- y_bin = transpose(y_bin);
+y_bin = transpose(y_bin);
 
 end
