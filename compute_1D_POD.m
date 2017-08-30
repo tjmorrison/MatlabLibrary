@@ -1,4 +1,4 @@
-function [ phiU,lam ] = compute_1D_POD( var,figure)
+function [ phiU,lam,vecU ] = compute_1D_POD( var,figure)
 % METHOD OF SNAPSHOTS
 % calculate the empirical correlation matrix C
 nx = size(var,1);
