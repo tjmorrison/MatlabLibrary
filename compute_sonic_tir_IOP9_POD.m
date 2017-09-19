@@ -1,26 +1,16 @@
 function [ tower_phi, tower_lam, tower_EigenVec, TIR_phi, TIR_lam, TIR_EigenVec ] = compute_sonic_tir_IOP9_POD(tower,T_prime_cut)
 
-tower.T = [];
-% spectral cut off to 1Hz
-tower.Fs = 20;
-TIR.T = [];
- 
-for z = 1:tower.num_z
-    [tower.T_filt(:,z)] = spectral_cuttoff(tower.Fs,Temp(:,z)', 0 ,1);
-    tower.T = [tower.T;tower.T_filt(:,z)];
-    TIR.T = [TIR.T;squeeze(T_prime_cut(1+z*6,1+z*6,:))];
-end
 
-rmfield(tower,'T_filt');
-%clear T_prime_cut;
+
+
 
 % build matrix for sonic POD 
 %clear w_POD; clear T_POD;
-Nperiod = tower.Fs*60*60; %Nperiod
+Nperiod = 20*60*60; %Nperiod
 samp_interval = 60;
 
-T = tower.T(1:samp_interval:end);
-TC = TIR.T(1:samp_interval:end);
+T = tower(1:samp_interval:end);
+TC = T_prime_cut(1:samp_interval:end);
 
 cnt = 1;
 length = Nperiod/samp_interval;

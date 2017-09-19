@@ -1,54 +1,53 @@
 function [  ] = compute_1D_wavelet( var ,Dt, Wlet_type, figure_opt)
-%UNTITLED4 Summary of this function goes here
-%   Detailed explanation goes here
+
 
 %figure() %In case we want to plot, a 'running' plot at each gate distance.
 
-    p = (nextpow2(length(var)))+1;
-    scales = 2.^(1:p);  %The number of scales is 'for us' given by the 
-                        %length of the signal, since we want the points to
-                        %be equidistant, in order to have an homogeneous
-                        %representation of the spectra over all the
-                        %frequencies.
-                        
-    freq = scal2frq(scales,Wlet_type,Dt); %Computes the "Pseudo-frequency" associated
-                                     %with each Wavelet at each scale.
+p = (nextpow2(length(var)))+1;
+scales = 2.^(1:p);  %The number of scales is 'for us' given by the 
+                    %length of the signal, since we want the points to
+                    %be equidistant, in order to have an homogeneous
+                    %representation of the spectra over all the
+                    %frequencies.
 
-    %------------------------------------
-    %Padding the Signal, avoids end/border effects:
-    diff = (2^p)-length(var);
-    tmpU = padarray(var,[0 floor(diff/2)],'pre');
-    tmpdiff = diff - floor(diff/2);
-    tmpU = padarray(tmpU,[0 tmpdiff],'post');
-    %------------------------------------
-    
-    %Computing the Wavelet of the actual signal.
-    coefs = cwt(tmpU,scales,Wlet_type);
-    Energy = (abs(coefs)).^2;
-    tmpSpectra = (mean(Energy,2));
-    
-    %Grouping all the transforms along the different gates in a single
-    %Variable.
-    
-    for j = 1:length(tmpSpectra)
-        Spectra(j) = tmpSpectra(j);
-        MSpectra(j) = freq(j)*tmpSpectra(j);
-    end
-    
-    %IN case we want to plot, a 'running' plot at each gate distance.
-    switch figure_opt
-        case 'on'
-            figure()
-            semilogx(freq,freq'.*tmpSpectra,'-k')
-            ylabel('E$f$','interpreter','latex','fontsize',20)
-            xlabel('$f (Hz)$','interpreter','latex','fontsize',20)
-            hold on;
-            pause;
-        case 'off' 
-            %do nothing            
-    end
-    
-    
+freq = scal2frq(scales,Wlet_type,Dt); %Computes the "Pseudo-frequency" associated
+                                 %with each Wavelet at each scale.
+
+%------------------------------------
+%Padding the Signal, avoids end/border effects:
+diff = (2^p)-length(var);
+tmpU = padarray(var,[0 floor(diff/2)],'pre');
+tmpdiff = diff - floor(diff/2);
+tmpU = padarray(tmpU,[0 tmpdiff],'post');
+%------------------------------------
+
+%Computing the Wavelet of the actual signal.
+coefs = cwt(tmpU,scales,Wlet_type);
+Energy = (abs(coefs)).^2;
+tmpSpectra = (mean(Energy,2));
+
+%Grouping all the transforms along the different gates in a single
+%Variable.
+
+for j = 1:length(tmpSpectra)
+    Spectra(j) = tmpSpectra(j);
+    MSpectra(j) = freq(j)*tmpSpectra(j);
+end
+
+%IN case we want to plot, a 'running' plot at each gate distance.
+switch figure_opt
+    case 'on'
+        figure()
+        semilogx(freq,freq'.*tmpSpectra,'-k')
+        ylabel('E$f$','interpreter','latex','fontsize',20)
+        xlabel('$f (Hz)$','interpreter','latex','fontsize',20)
+        hold on;
+        pause;
+    case 'off' 
+        %do nothing            
+end
+
+
 
 %Spectra in a log-log plot:
 %---------------------------------------
