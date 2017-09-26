@@ -1,22 +1,23 @@
-function [ phiU,lam,vecU ] = compute_1D_POD( var,figure)
+function [ phiU,lam,vecU ] = compute_1D_POD( M,figure)
 % METHOD OF SNAPSHOTS
 % calculate the empirical correlation matrix C
-nx = size(var,1);
-nsnap = size(var,2);
-U= reshape(var,nx,nsnap);
+nsnap = size(M,1);
+nperiod = size(M,2);
+
+%M= reshape(var,nsnap,nperiod);
 
 
-CU = U'*U/nsnap;
+CU = M'*M/nsnap;
 fprintf('Correlation matrix \n')
 
 % Calculate the POD basis
 [vecU,valU] = eig(CU);
 fprintf('Eigenstuff \n')
-phi = U * vecU;
+phi = M.*vecU;
 
 % Normalize the POD basis
 for i=1:nsnap
-    phi(:,i) = phi(:,i)/norm(phi(:,i),2);
+    phi(i,:) = phi(i,:)/norm(phi(i,:),2);
 end
 
 lam = diag(valU);
@@ -25,7 +26,9 @@ lam = diag(valU);
 lam = rot90(lam,2);
 lam(end)=0;
 
-phiU = reshape(fliplr(phi(1:nx,:)),nx,nsnap);
+phiU = rot90(phi,2);
+phiU = reshape(fliplr(phi),nsnap,nperiod);
+%phiU = reshape(fliplr(phi),nsnap,nperiod);
 
 % Plotting the results
 switch figure
