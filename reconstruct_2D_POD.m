@@ -1,5 +1,5 @@
 function [ u_rec ] = reconstruct_2D_POD( u, phiU,n_modes)
-
+%u is 3D TIR vector (nx,ny,nsnap)
 %preparing data
 [nx,ny,n_snap]=size(u);
 fprintf('Begin POD Reconstruction \n')
