@@ -1,16 +1,15 @@
 function [T_fluct, T_patch, T_trend, T_mean] = compute_TIR_components(T,avg_window)
-%make sure num_chunks is 
+%Decomposes TIR time series based on method from Travis Morrison
+%Method is similiar to Christen et al 2012
 
-%Establish vars 
+%T is TIR time series
+%avg_window is index number relating to size of averaging chunk 
+%(ie data at 20hz averaged every 2 seconds will have avg_window=40)
 
-%matrix size
+%Establish vars %matrix size
 nx = size(T,1);
 ny = size(T,2);
 nt = size(T,3);
-%T_fluct
-T_fluct = zeros(nx,ny,nt);
-%n_tot = nt*ny*nx;
-%T_vector = reshape(T, [1,n_tot]); 
 
 
 %Compute mtrend since it's math does not depend on temporal trend
@@ -21,6 +20,7 @@ T_mean = zeros(1,num_chunks);
 T_fluct = zeros(nx,ny,nt);
 T_trend = zeros(1,nt);
 index_start = 1;index_end = avg_window;
+
 for i = 1:num_chunks
     %space and temporal mean
     T_mean(i) = mean(mean(mean(T(:,:,index_start:index_end),1),2),3);
@@ -29,13 +29,9 @@ for i = 1:num_chunks
     %Calc trend
     T_trend(index_start:index_end)= squeeze(mean(mean(T(:,:,index_start:index_end),1),2)) - T_mean(i);
     %calc the fluctuations for a chunk
-    for j = index_start:index_end
-        T_fluct(:,:,j) = T(:,:,j) - T_patch(:,:,i) - T_mean(i); 
-        
-    end
     for x = 1:nx
         for y = 1:ny
-            T_fluct(x,y,index_start:index_end) = squeeze(T_fluct(x,y,index_start:index_end))' - T_trend(1,index_start:index_end);
+            T_fluct(x,y,index_start:index_end) = detrend(squeeze(T(x,y,index_start:index_end)));
         end
     end
     
