@@ -6,7 +6,7 @@ total_time = 5; %[minutes] total length of all the saved chunks added together
 nx = 256;
 ny = 320;
 chunk_frames = round(chunk_time*camera_freq*60); 
-start_frame = 100000; %beginning of workable data from IOP10, time of day?
+start_frame = 105990; %beginning of workable data from IOP10, time of day?
 end_frame = start_frame + (total_time*camera_freq*60);
 data_path = 'E:\FLIR_IOP10\1\';
 %
@@ -34,7 +34,8 @@ for num_frame = start_frame:end_frame
         %clear loaded 
        
     end
-     clearvars -except chunk_frames chunk_time num_frame start_frame data data_path end_frame
+    %data needs to be cleared every iteration
+     clearvars -except chunk_frames chunk_time num_frame start_frame data_path end_frame
 end
 
 fprintf('Loading data complete')
