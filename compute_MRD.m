@@ -1,4 +1,9 @@
 function [D,a,b] = compute_MRD (a,b,M,Mx)
+%a is variable 1 
+%b is variable 2, so if you want the MRD of the heat flux, a = w' and b =
+%T'
+%M is the closest power of two calculated from floor(log2(#of points))
+%where # of points is the length of a (b)
 
 for ims=0:M-Mx  
   ms=M-ims;
