@@ -9,7 +9,7 @@ switch HF_option
        % Pr=0.3; %Prandlt Number from Shao et al. 13
 
         %calculate the Subgrid eddy diffusivity
-        K_sg=C_k.*sqrt(tke).*z;
+        K_sg=C_k.*tke.^.5.*z;
         
         %Calculate the subgrid eddy diffusivity for a scalar
         K_hsg=K_sg.*Pr.^(-1);
@@ -55,9 +55,9 @@ switch HF_option
         elseif zeta>0
             psi_M = -beta1M.*zeta;
             psi_H = -beta1H.*zeta;
-        else 
-            psi_M = 0;
-            psi_H =0;
+%         else 
+%             psi_M = 0;
+%             psi_H =0;
         end
         ra = (1./(k.*u_star)).*(log(z./zT) - psi_H);
         %aerodynamic resistance [s/m]
