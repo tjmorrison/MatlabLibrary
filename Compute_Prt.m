@@ -1,4 +1,4 @@
-function [ Pr_t_neutral, Pr_t ] = Compute_Prt( Rg, zeta )
+function [ Pr_t_neutral, Pr_t ] = Compute_Prt( Rg, zeta , z, zi, S, T)
 %Compute the turbulent Pr number using Gaby's formulation 
 %Katul et al 2014 for neutral cases 
 %Li et al 2015 for unstable cases
@@ -6,8 +6,11 @@ function [ Pr_t_neutral, Pr_t ] = Compute_Prt( Rg, zeta )
 % List of Variables
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Rg- Flux gradient Richardson Number
-% zeta - stability
-
+% zeta - stability (z/L)
+% zi - boundary layer depth [m]
+% z - instrument height [m]
+% S - vertical gradient of the mean wind (dU/dz)
+% Gamma - vertical gradient of the temperature (dT/dz)
 
 % Other constants in the theory
 % C_IT,C_IU - Rotta constants (3/5)
@@ -21,14 +24,37 @@ omega2 = 4;
 Pr_t_neutral = (2*Rg)./(1+omega2.*Rg-sqrt(-4*Rg+(-1-omega2*Rg)^2));
 
 %now compute the adjusted Pr# for non stable cases
-C_IU = 3/5; C_IT = 3/5;
-D1 = (A_U/AUU)+(5/3);
+C_IU = 3/5; C_IT = 3/5; %isotropzation constants (3/5)
+A_U =1.8; A_T = 1.8; %Rotta constants [Pope 2000]
+A_UU =; A_TT=;
+
+D1 = (A_U/A_UU)+(5/3);
 D2 = -(1-C_IU).*(S/A_UU.*epsilon.^(1/3));
 D3 = (A_T/A_TT) + (5/3);
 
+% Define wave number ranges, for now they are set equal
+K_a_T = 1/z; K_a_w = 1/z;
+K_delta_T = K_a_T; K_delta_w = K_a_w; %-5/3 scaling begins
 
-g1 =;
-g2 =;
+
+% Handle free convection case (FTT has different scaling, see Fig.1 from Li
+% et al. 15)
+if (zeta < -1000) %arbitary values (z/L->-inf)
+    alpha1 =0; alpha2=;alpha3=;
+    gamma1 =0; gamma2=;gamma3=;
+else % handle other scaling (Fww and FTT has similiar scaling)
+    alpha1 =0; alpha2=;alpha3=;
+    gamma1 =0; gamma2=;gamma3=;
+end
+
+
+g1 =(((-alpha1-(2/3)+D3).*(-alpha1+(1/3)))^(-1).*K_delta_w^(-alpha2+(1/3)).*K_a_w^(alpha2-alpha3))+...
+    (((-alpha2-(2/3)+D3).*(-alpha2+(1/3)))^(-1).*(K_a_w^(-alpha3+(1/3))-(K_delta_w^(-alpha2+(1/3)).*K_a_w^(alpha2-alpha3))))+...
+    (((-alpha3-(2/3)+D3).*(-alpha3+(1/3)))^(-1).*(-K_a_w^(-alpha3+(1/3))));
+
+g2 =(((-gamma1-(2/3)+D3).*(-gamma1+(1/3)))^(-1).*K_delta_T^(-gamma2+(1/3)).*K_a_T^(gamma2-gamma3))+...
+    (((-gamma2-(2/3)+D3).*(-gamma2+(1/3)))^(-1).*(K_a_T^(-gamma3+(1/3))-(K_delta_T^(-gamma2+(1/3)).*K_a_T^(gamma2-gamma3))))+...
+    (((-gamma3-(2/3)+D3).*(-gamma3+(1/3)))^(-1).*(-K_a_T^(-gamma3+(1/3))));
 
 %Compute omega1
 C_IT = 3/5;
@@ -37,11 +63,10 @@ C_O = 0.65;
 omega1 = (1/(1-C_IT))*(C_T/C_O)*(g2/g1) ;
 
 %compute the stability correction function from Businger-Dyer 1971
-gamma1 = 15; %Garratt [1992] Appendix 4, Hogstrom 1988
-gamma2 = 9;      
+gamma1_stab = 15; %Garratt [1992] Appendix 4, Hogstrom 1988     
 beta1M =4.7;                  
 if (zeta <= 0)
-    x = (1-gamma1.*zeta).^(1/4);
+    x = (1-gamma1_stab.*zeta).^(1/4);
     psi_m = 2.*log((1+x)./2) + log((1+x.^2)/2)-2.*atan(x)+pi./2;    
 elseif zeta>0
     psi_m = -beta1M.*zeta;
