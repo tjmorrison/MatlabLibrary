@@ -1,0 +1,9 @@
+SCC = This is a Source Code Control file
+
+[demo.dsp]
+SCC_Aux_Path = "\\Server4\VSS\VSS_Data\Softwaregruppe"
+SCC_Project_Name = "$/IRBIS/SDK/MSVC", JXPAAAAA
+
+[demo.dsw]
+SCC_Aux_Path = "\\Server4\VSS\VSS_Data\Softwaregruppe"
+SCC_Project_Name = "$/IRBIS/SDK/MSVC", JXPAAAAA

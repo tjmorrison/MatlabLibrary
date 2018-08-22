@@ -203,7 +203,7 @@ clear timestamp ;
 % Get filename and save matrices with black body temperatures to file(s)
 % Choose between generate one file per frame and generate one matrice with
 % all frames and save it to one file
-GenerateOneFilePerFrame = false ;
+GenerateOneFilePerFrame = true ;
 
 if ( GenerateOneFilePerFrame )
     ResultPathname = uigetdir( pathname ) ;
