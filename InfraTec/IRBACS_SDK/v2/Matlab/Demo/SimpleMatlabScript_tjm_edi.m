@@ -1,6 +1,7 @@
+
 %Edit of SimpleMatlabScript
 %Changed by Travis Morrison to read and save irb files 
-clear all; 
+%clear all; 
 global glbIRBFileHnd ;
 global glbIRBLoaded ;
 
@@ -98,6 +99,9 @@ glbIRBLoaded=true ;
 
 % get number of frames in IRB-sequence
 frameCount=irbacs_GetFrameCount(glbIRBFileHnd) ;
+% timestamp=irbacs_GetFrameTimeStamp(glbIRBFileHnd) ;
+% calibData= irbacs_GetIRBCalibData( 'getIRBCalibData',glbIRBFileHnd);
+handles.calibData= irbacs_GetParam( glbIRBFileHnd,18);
 %{
 % only to show, how to work with Irb-indices of frames, 
 % but usually it is better to work with array indices, like it done some rows later ...
@@ -154,6 +158,8 @@ for index=0:frameCount-1
     % more data (header info) is transfered, so the buffer has to be bigger
     % determine the full size of frame
     [result, handles.irbfullframeHeight] = irbacs_GetParam(glbIRBFileHnd,ParamConst.pavHeightWithHdr);
+    epsilon = irbacs_GetParam(glbIRBFileHnd,ParamConst.pavEpsilon);
+    [result, handles.irbfullframeHeight] = irbacs_GetParam(glbIRBFileHnd,ParamConst.pavSensorTemp);
     if result == 0
         disp('Determine fullframe height failed.') ;    
         irbacs_UnLoadIRB( glbIRBFileHnd ) ;        
@@ -205,25 +211,30 @@ end % for all frames of irb-file
 %important to free, otherwise irabcs.dll can not unloaded 
 clear timestamp ; 
 
-% --------------------------------------------------------------------------
+%% --------------------------------------------------------------------------
 %adding interpolation to reduce file size
 desample = true;
-interval = 32; %number of elements to skip
+spatial_interval = 8; %number of elements to skip
+temporal_interval=5;
+cnt = 1;
 if(desample)
     matrix_str = 'IR_PixTempMatrices_';
-    IRmatrix = zeros(768/interval,1024/interval);
-   for index =1:frameCount
+    IRmatrix = zeros(768/spatial_interval,1024/spatial_interval);
+   for index =1:temporal_interval:frameCount
         if index ==1
-            IRmatrix(:,:,index) = IR_PixTempMatrice(1:interval:end,1:interval:end);
+            IRmatrix(:,:,cnt) = IR_PixTempMatrice(1:spatial_interval:end,1:spatial_interval:end);
+           cnt = cnt+1;
             clear IR_PixTempMatrice;
         else
-            IRmatrix(:,:,index) = eval(strcat(matrix_str,num2str(index),'(1:interval:end,1:interval:end)'));
+            IRmatrix(:,:,cnt) = eval(strcat(matrix_str,num2str(index),'(1:spatial_interval:end,1:spatial_interval:end)'));
+            cnt = cnt+1;
             eval( sprintf('clear IR_PixTempMatrices_%d;',index));
         end
    end
+   clear IR_Pix*;
 else%do nothing
 end
-%% --------------------------------------------------------------------------
+% --------------------------------------------------------------------------
 
 % Get filename and save matrices with black body temperatures to file(s)
 % Choose between generate one file per frame and generate one matrice with
@@ -233,7 +244,7 @@ GenerateOneFilePerFrame = false ;
 if ( GenerateOneFilePerFrame )
     %For user interface saving, use commented line
     %ResultPathname = uigetdir( pathname ) ;
-    ResultPathname = '.\testdata'
+    ResultPathname = '.\testdata';
     if ( length( ResultPathname ) > 1 )
         filename = strrep( filename, '.irb', '') ;
         for index=1:frameCount
@@ -244,21 +255,24 @@ if ( GenerateOneFilePerFrame )
         end
     end
 else
-    [ResultFilename, ResultPathname] = uiputfile({'*.mat';'*.txt';'*.*'} , 'Save IR-data matrice as', pathname);
-    if length( ResultFilename ) > 1        
-        All_IR_PixTempMatrices=zeros(handles.irbframeHeight,handles.irbframeWidth, frameCount);
-        for index=1:frameCount
-            % generate one matrice with all frames and save it to one file 
-            eval(sprintf('All_IR_PixTempMatrices(:,:,%d)=IR_PixTempMatrices_%d(:,:);',index,index));
-        end
-        disp('Please wait for end of save file process...') ;
+    %[ResultFilename, ResultPathname] = uiputfile({'*.mat';'*.txt';'*.*'} , 'Save IR-data matrice as', pathname);
+    ResultPathname = '.\testdata\IRmatrix';
+    %^should add something about the time stamp if possible 
+    if length( ResultPathname ) > 1        
+%         All_IR_PixTempMatrices=zeros(handles.irbframeHeight,handles.irbframeWidth, frameCount);
+%         for index=1:frameCount
+%             % generate one matrice with all frames and save it to one file 
+%             eval(sprintf('All_IR_PixTempMatrices(:,:,%d)=IR_PixTempMatrices_%d(:,:);',index,index));
+%         end
+%         disp('Please wait for end of save file process...') ;
         % if you get warnings like 
         % Warning: Variable 'All_IR_PixTempMatrices' cannot be saved to a MAT-file 
         % whose version is older than 7.3.
         % the please try to modify version option '-vX.X' to your needs,
         % and check Matlab documention
         % To save this variable, use the -v7.3 switch.please then Matlab 2015 can 
-        save( [ ResultPathname,ResultFilename], 'All_IR_PixTempMatrices','-mat', '-v7.3') ;
+        cd(handles.DemoWorkDir);
+        save( [ResultPathname], 'IRmatrix', '-v7.3') ;
         disp('File save ready.') ;
     end
 end
