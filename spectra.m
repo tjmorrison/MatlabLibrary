@@ -1,4 +1,4 @@
-function [ww_new ff_new] = spectra(uu2)
+function [ww_new ff_new] = spectra(uu2,F)
 % Compute the turbulent Spectra
 tbin = 0.1;         % Time bins (minutes)
 tbin = tbin * 60;   % seconds
@@ -7,7 +7,7 @@ uu2 = uu2 - mean(uu2); % perturbation u'
 
 u2=uu2;
 
-F=20;       % Sampling Frequency
+%F=20;       % Sampling Frequency
 Fn = F/2;   % Nyquist Frequency
 tt2=1:length(uu2);
 tt2=tt2/F;
