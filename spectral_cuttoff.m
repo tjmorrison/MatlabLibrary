@@ -24,6 +24,7 @@ BPF = ((lower_freq < abs(f)) & (abs(f) < upper_freq));
 figure;
 plot(f,BPF);
 
+
 time = dt*(0:N-1)';
 figure;
 plot(time,x);
@@ -44,15 +45,15 @@ x_cut=ifft(ifftshift(spektrum),'symmetric')*N; %inverse ifft
 
 %figures to see if it worked! 
 figure()
-title('spectras','interpreter','latex','fontsize',15)
+title('spectras','interpreter','latex','fontsize',25)
 plot(x)
 hold on
 plot(x_cut)
 hold off
 grid on
 legend('orginal signal','spectral cut')
-xlabel('$n$ (Hz)','interpreter','latex','fontsize',15)
-ylabel('x','interpreter','latex','fontsize',15)
+xlabel('$n$ ','interpreter','latex','fontsize',25)
+ylabel('x','interpreter','latex','fontsize',25)
 
 
 
